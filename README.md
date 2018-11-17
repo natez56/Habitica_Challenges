@@ -1,2 +1,2 @@
 # Habitica_Challenges
-Coding Challenges Submitted by Habitica Users
+My Solutions to Challenges Submitted by Habitica Users
