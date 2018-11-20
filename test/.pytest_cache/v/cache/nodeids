@@ -1,0 +1,4 @@
+[
+  "november_test.py::TestPuzzleSolver::()::test_gen_puzzle_solutions",
+  "november_test.py::TestPuzzleSolver::()::test_format_string"
+]

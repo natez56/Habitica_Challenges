@@ -68,7 +68,8 @@ def gen_puzzle_solutions(input_string):
 
 def main():
     print(*gen_puzzle_solutions('SEND + MORE = MONEY'), sep='\n')
-    return
+    print(*gen_puzzle_solutions('SEND + MORE = MONEY'), sep='\n')
+    print(*gen_puzzle_solutions('SEND + MORE = MONEY'), sep='\n')
 
 
 if __name__ == '__main__':

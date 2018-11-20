@@ -1,10 +1,41 @@
+""" Author: Lumral
+    Date: 11/20/2018
+    How to Run: Program runs on python 3.5. In your terminal navigate to the
+    November_Challenge folder and type python3 symbol_solver.py to run.
+
+    Description: Solution to the Habitica November programming challenge:
+
+    General steps followed are:
+    1) Format the input string to correctly separate operators from letters.
+    2) Create a set of the leading letter characters.
+    3) Create a set of all characters in the expression.
+    4) Generate all permutations of numbers of length equal to the number of
+       unique characters in the expression
+    5) Replace the symbols in the expressions with the numbers generated.
+    6) Check to make sure there are no leading zeros.
+    7) Split problem into left of equal sign and right of equal sign
+       components.
+    8) Check if the problem evaluates using the python eval method.
+    9) Function gen_puzzle_solutions is a generator and so returns a generator
+       object that will allow a user to iterate over possible solutions.
+"""
+
 import string
 import itertools as it
+import time
 
 
 def format_string(string):
-    """Format string to normalize spaces."""
-    operators = ['+', '-', '*', '/', '=', '(', ')']
+    """Format string to normalize spaces.
+
+    Args:
+        string (str): Original string passed to the gen_puzzle_solutions 
+        function
+
+    Returns:
+        str: A string that is the formatted string.
+    """
+    operators = ['+', '-', '*', '/', '=']
 
     # Remove all spaces in input string.
     string = string.replace(' ', '')
@@ -16,19 +47,31 @@ def format_string(string):
     # Special case for exponentiation. Fix spaces added as a result of *
     # being found. Also convert ^ to **.
     string = string.replace('*  *', '**')
-    string = string.replace('^', '**')
+    string = string.replace('^', ' ** ')
+
+    # Special case for brackets.
+    string = string.replace('(', '( ')
+    string = string.replace(')', ' )')
 
     return string.lower()
 
 
 def gen_puzzle_solutions(input_string):
-    """Solves symbolic puzzles for all basize math operations."""
+    """Generator function that solves symbolic puzzles for all basic math
+    operations.
+
+    Args:
+        input_string (str): String that is the expression to be solved.
+
+    Returns:
+        object (iterator): The solutions to the symbolic puzzle.
+    """
     string = format_string(input_string)
 
     # Get lead chars to check for lead 0's later.
     lead_chars = set(x[0] for x in string.split() if x.isalpha())
 
-    # Complete set of unique chars found in the input string.
+    # Get complete set of unique chars found in the input string.
     char_set = set(x for x in string if x.isalpha())
 
     # Check to ensure that input string does not contain more than 10 unique
@@ -41,7 +84,7 @@ def gen_puzzle_solutions(input_string):
     for nums in it.permutations('0123456789', len(char_set)):
         char_dict = dict(zip(char_set, nums))
 
-        # Check for leading zeros.
+        # Check to make sure no leading zeros are present.
         if '0' not in [char_dict[x] for x in lead_chars]:
             expression = string
 
@@ -55,13 +98,19 @@ def gen_puzzle_solutions(input_string):
             # Evaluate the expression if possible.
             try:
                 if eval(LHS) == eval(RHS):
+                    # Generator function so yield is used in place of return.
                     yield expression
             except (ArithmeticError, SyntaxError):
                 pass
 
 
 def main():
-    print(*gen_puzzle_solutions('SEND + MORE = MONEY'), sep='\n')
+    solution = list(gen_puzzle_solutions('SEND + MORE = MONEY'))
+    if len(solution) < 1:
+        print("No solutions.")
+    else:
+        # * used to print list elements individually and not the whole list.
+        print(*solution, sep='\n')
 
 
 if __name__ == '__main__':
